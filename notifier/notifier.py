@@ -1,6 +1,8 @@
 import customtkinter
 import feedparser
 import webbrowser
+import requests
+from tkinter import ttk, Toplevel
 
 
 customtkinter.set_appearance_mode("dark")
@@ -9,6 +11,8 @@ customtkinter.set_default_color_theme("blue")
 # URL do RSS Feed
 RSS_FEED_URL = "https://news.google.com.br/rss/search?q=games"
 RSS_FEED_URL_CRIPTO = "https://news.google.com.br/rss/search?q=criptomoedas"
+
+CRYPTO_IDS = ["bitcoin", "solana", "ethereum", "dogecoin", "cardano"]  # Adicione ou remova moedas conforme necessário
 
 
 def carregar_noticias():
@@ -58,6 +62,31 @@ def limpar_abas(aba):
     for widget in aba.winfo_children():
         widget.destroy()
 
+def cripto_price():
+    janela_price = Toplevel(widget)
+    janela_price.title("Preço Criptomoedas")
+    janela_price.geometry("600x300")
+
+
+    tree = ttk.Treeview(janela_price, columns=("Moeda", "Preço (USD)", "Variação (%)"), show="headings")
+    tree.heading("Moeda", text="Moeda")
+    tree.heading("Preço (USD)", text="Preço (USD)")
+    tree.heading("Variação (%)", text="Variação (%)")
+    tree.column("Moeda", anchor="center", width=150)
+    tree.column("Preço (USD)", anchor="center", width=150)
+    tree.column("Variação (%)", anchor="center", width=150)
+    tree.pack(fill="both", expand=True)
+
+    # Obter dados da API CoinGecko
+    url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(CRYPTO_IDS)}&vs_currencies=usd&include_24hr_change=true"
+    response = requests.get(url).json()
+
+    for cripto_id, data in response.items():
+        moeda = cripto_id.capitalize()
+        preco = f"${data['usd']:.2f}"
+        variacao = f"{data['usd_24h_change']:.2f}%"
+        tree.insert("", "end", values=(moeda, preco, variacao))
+
 
 
 
@@ -78,6 +107,9 @@ botao_carregar.pack()
 
 botao_carregar_cripto = customtkinter.CTkButton(aba_cripto, text="Atualizar Notícias Cripto", command=carregar_noticias_cripto)
 botao_carregar_cripto.pack(pady=10)
+
+botao_cripto_price = customtkinter.CTkButton(widget, text="Preço Criptomoedas", command=cripto_price)
+botao_cripto_price.pack(pady=10, padx=10)
 
 carregar_noticias()
 
