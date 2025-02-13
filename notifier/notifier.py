@@ -77,7 +77,7 @@ def cripto_price():
     tree.column("Variação (%)", anchor="center", width=150)
     tree.pack(fill="both", expand=True)
 
-    # Obter dados da API CoinGecko
+    # Obter dados da API CoinGecko.
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(CRYPTO_IDS)}&vs_currencies=usd&include_24hr_change=true"
     response = requests.get(url).json()
 
