@@ -8,7 +8,7 @@ from tkinter import ttk, Toplevel
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("blue")
 
-# URL do RSS Feed
+# URL do RSS Feed.
 RSS_FEED_URL = "https://news.google.com.br/rss/search?q=games"
 RSS_FEED_URL_CRIPTO = "https://news.google.com.br/rss/search?q=criptomoedas"
 
